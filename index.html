@@ -385,6 +385,7 @@ select {
 .rules-footnote { margin: 0; padding: 10px 14px 14px; color: var(--muted); font-size: .72rem; line-height: 1.42; }
 
 footer { padding: 24px 0 0; color: #738390; font-size: .74rem; text-align: center; }
+.client-report { display: none; }
 
 @media (max-width: 1220px) {
   .workspace, .visual-grid, .lower-grid { grid-template-columns: 1fr; }
@@ -408,12 +409,70 @@ footer { padding: 24px 0 0; color: #738390; font-size: .74rem; text-align: cente
   .opening-card { grid-template-columns: 1fr; }
 }
 
+@page { size: A4 landscape; margin: 10mm; }
+
 @media print {
-  .topbar { position: static; }
-  .header-actions, .method-strip, .view-control { display: none; }
-  body, :root { background: #fff; }
-  .panel { box-shadow: none; break-inside: avoid; }
-  main { max-width: none; padding: 12px; }
+  :root, body { background: #fff; color: #17232d; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .app-shell { display: none !important; }
+  .client-report { display: block; font-family: Arial, Helvetica, sans-serif; }
+  .report-page { break-after: page; }
+  .report-page:last-child { break-after: auto; }
+  .report-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 0 0 10px;
+    border-bottom: 3px solid #153149;
+  }
+  .report-brand { display: flex; align-items: center; gap: 10px; }
+  .report-mark {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #153149;
+    color: #f6b73c;
+    font-size: 13px;
+    font-weight: 850;
+  }
+  .report-brand strong { display: block; color: #153149; font-size: 15px; }
+  .report-brand span, .report-meta { display: block; margin-top: 2px; color: #617281; font-size: 9px; }
+  .report-meta { margin: 0; text-align: right; line-height: 1.45; }
+  .report-title { margin: 14px 0 4px; color: #0d2234; font-size: 23px; line-height: 1.2; }
+  .report-subtitle { margin: 0 0 12px; color: #617281; font-size: 10px; }
+  .report-summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0 12px; }
+  .report-kpi { padding: 9px 10px; border: 1px solid #cbd8e0; border-radius: 7px; background: #f6f9fb; }
+  .report-kpi span { display: block; color: #617281; font-size: 7.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+  .report-kpi strong { display: block; margin-top: 5px; color: #153149; font-size: 14px; line-height: 1.2; }
+  .report-kpi small { display: block; margin-top: 3px; color: #617281; font-size: 8px; }
+  .report-section { margin-top: 9px; break-inside: avoid; }
+  .report-section h2 { margin: 0 0 7px; color: #153149; font-size: 13px; }
+  .report-chart-wrap { height: 190px; padding: 4px 8px 0; border: 1px solid #d9e2e8; border-radius: 7px; overflow: hidden; }
+  .report-chart { display: block; width: 100%; height: 182px; }
+  .report-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .report-table th, .report-table td {
+    padding: 4px 5px;
+    border: 1px solid #d3dde4;
+    color: #273944;
+    font-size: 7.7px;
+    line-height: 1.3;
+    white-space: normal;
+    vertical-align: top;
+  }
+  .report-table thead th { background: #153149; color: #fff; font-weight: 800; text-align: center; }
+  .report-table tbody th { background: #f2f6f8; color: #153149; text-align: left; }
+  .report-table td { text-align: center; }
+  .report-table .report-left { text-align: left; }
+  .report-callout { margin-top: 10px; padding: 8px 10px; border-left: 4px solid #e5a62d; background: #fff7e3; color: #5f4918; font-size: 9px; line-height: 1.4; }
+  .report-two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .report-card { padding: 9px 10px; border: 1px solid #d5e0e7; border-radius: 7px; break-inside: avoid; }
+  .report-card h3 { margin: 0 0 5px; color: #153149; font-size: 10px; }
+  .report-card p, .report-card li { margin: 0; color: #465c6b; font-size: 8.3px; line-height: 1.45; }
+  .report-card ul { margin: 4px 0 0; padding-left: 15px; }
+  .report-note { margin-top: 12px; padding: 8px 10px; border: 1px solid #d9e2e8; border-radius: 7px; color: #536a79; font-size: 8px; line-height: 1.45; }
+  .report-footer { margin-top: 10px; padding-top: 6px; border-top: 1px solid #cbd8e0; color: #6a7a87; font-size: 7.5px; text-align: center; }
 }
 
   </style>
@@ -425,11 +484,11 @@ footer { padding: 24px 0 0; color: #738390; font-size: .74rem; text-align: cente
         <div class="brand-mark" aria-hidden="true">FT</div>
         <div>
           <strong>PET Sizing Tool</strong>
-          <span>Fleet sizing and investment planning · V5.5</span>
+          <span>Fleet sizing and investment planning · V5.6</span>
         </div>
       </div>
       <div class="header-actions">
-        <button class="button button-secondary" id="downloadCsv" type="button">Download control CSV</button>
+        <button class="button button-secondary" id="downloadPdf" type="button" title="Opens the print dialog so the report can be saved as PDF">Download client PDF</button>
         <button class="button button-outline" id="resetInputs" type="button">Reset inputs</button>
       </div>
     </header>
@@ -576,9 +635,11 @@ footer { padding: 24px 0 0; color: #738390; font-size: .74rem; text-align: cente
 
       </section>
 
-      <footer>Prepared by Meniar Trabelsi · PET Sizing Tool V5.5</footer>
+      <footer>Prepared by Meniar Trabelsi · PET Sizing Tool V5.6</footer>
     </main>
   </div>
+
+  <div class="client-report" id="clientReport" aria-hidden="true"></div>
 
   <script>
 (function (root, factory) {
@@ -1369,8 +1430,9 @@ footer { padding: 24px 0 0; color: #738390; font-size: .74rem; text-align: cente
     rationaleBody: document.getElementById("rationaleBody"),
     resultsBody: document.getElementById("resultsBody"),
     alternativeList: document.getElementById("alternativeList"),
+    clientReport: document.getElementById("clientReport"),
     resetInputs: document.getElementById("resetInputs"),
-    downloadCsv: document.getElementById("downloadCsv")
+    downloadPdf: document.getElementById("downloadPdf")
   };
 
   const numberFormatter = new Intl.NumberFormat("en-GB", { maximumFractionDigits: 0 });
@@ -1760,6 +1822,7 @@ footer { padding: 24px 0 0; color: #738390; font-size: .74rem; text-align: cente
     elements.fleetChart.innerHTML = "";
     elements.resultsBody.innerHTML = "";
     elements.alternativeList.innerHTML = "";
+    elements.clientReport.innerHTML = "";
   }
 
   function render() {
@@ -1779,6 +1842,7 @@ footer { padding: 24px 0 0; color: #738390; font-size: .74rem; text-align: cente
     renderRationale(plan);
     renderAlternatives(plan);
     renderOpeningOptions(plan.recommended);
+    buildClientReport();
   }
 
   function resetInputs() {
@@ -1788,77 +1852,158 @@ footer { padding: 24px 0 0; color: #738390; font-size: .74rem; text-align: cente
     render();
   }
 
-  function csvEscape(value) {
-    const text = String(value ?? "");
-    return `"${text.replace(/"/g, '""')}"`;
+  function reportHeader(generatedDate) {
+    return `<div class="report-header">
+      <div class="report-brand">
+        <div class="report-mark">FT</div>
+        <div><strong>PET Sizing Tool</strong><span>Fleet sizing and investment planning</span></div>
+      </div>
+      <p class="report-meta">Client recommendation report<br>Generated ${generatedDate}</p>
+    </div>`;
   }
 
-  function downloadPlan() {
+  function buildClientReport() {
+    if (!state.plan || !state.plan.feasible) {
+      elements.clientReport.innerHTML = "";
+      return;
+    }
+
+    const plan = state.plan;
+    const recommended = plan.recommended;
+    const metrics = state.phases.map(engine.phaseMetrics);
+    const finalPhase = recommended.phasePlans[recommended.phasePlans.length - 1];
+    const horizonYears = metrics.reduce((sum, phase) => sum + phase.duration, 0);
+    const totalCremations = metrics.reduce((sum, phase) => sum + phase.volume * phase.duration, 0);
+    const generatedDate = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "long", year: "numeric" }).format(new Date());
+    const chart = elements.fleetChart.outerHTML.replace('id="fleetChart"', 'class="report-chart"');
+
+    const assumptionRows = [
+      ["Phase duration", metrics.map((item) => `${item.duration} ${plural(item.duration, "year")}`)],
+      ["Annual volume", metrics.map((item) => formatNumber(item.volume))],
+      ["Individual / collective", metrics.map((item) => `${decimalFormatter.format(item.individualShare)}% / ${decimalFormatter.format(100 - item.individualShare)}%`)],
+      ["Individual annual volume", metrics.map((item) => formatNumber(item.individualDemand))],
+      ["Collective annual volume", metrics.map((item) => formatNumber(item.collectiveDemand))],
+      ["Opening time", metrics.map((item) => `${decimalFormatter.format(item.hours)} h/day`)],
+      ["Operating days / availability", metrics.map((item) => `${formatNumber(item.days)} days / ${decimalFormatter.format(item.availability)}%`)],
+      ["Average pet weight", metrics.map((item) => `${decimalFormatter.format(item.weight)} kg`)]
+    ].map(([label, values]) => `<tr><th>${label}</th>${values.map((value) => `<td>${value}</td>`).join("")}</tr>`).join("");
+
+    const phaseRows = recommended.phasePlans.map((item, index) => {
+      const allocation = item.allocation;
+      const purchase = sumCounts(item.purchases) > 0
+        ? purchaseLabel(item.purchases, item.startYear, false)
+        : "No purchase";
+      const opening = item.openingOptions.length
+        ? item.openingOptions.slice(0, 2).map(openingOptionText).join("<br>")
+        : "Not required";
+      return `<tr>
+        <th>Phase ${index + 1}<br><small>${periodLabel(index)}</small></th>
+        <td>${formatNumber(allocation.metrics.individualDemand)}</td>
+        <td>${formatNumber(allocation.metrics.collectiveDemand)}</td>
+        <td class="report-left"><strong>${engine.countsLabel(item.counts, "None")}</strong></td>
+        <td class="report-left">${purchase}</td>
+        <td>${formatPercent(allocation.utilization)}</td>
+        <td>${formatPercent(allocation.spareCapacity)}</td>
+        <td class="report-left">${opening}</td>
+      </tr>`;
+    }).join("");
+
+    const openingCards = recommended.phasePlans
+      .filter((item) => item.openingOptions.length > 0)
+      .map((item) => `<div class="report-card">
+        <h3>Phase ${item.phaseIndex + 1} - ${periodLabel(item.phaseIndex)}</h3>
+        <p>${item.openingOptions.slice(0, 3).map(openingOptionText).join("<br>")}</p>
+      </div>`).join("") || `<div class="report-card"><h3>No opening-time alternative required</h3><p>The recommended investment timeline remains the available capacity plan under the current assumptions.</p></div>`;
+
+    const alternatives = plan.alternatives
+      .filter((item) => item.finalUnits === plan.minimumFinalUnits)
+      .slice(0, 4)
+      .map((item, index) => {
+        const alternativeFinal = item.phasePlans[item.phasePlans.length - 1];
+        return `<li><strong>Alternative ${index + 1}:</strong> ${engine.countsLabel(item.finalFleet)} - ${formatPercent(alternativeFinal.allocation.utilization)} utilisation in Phase 5.</li>`;
+      }).join("") || `<li>No equivalent minimum-unit alternative is available for the current assumptions.</li>`;
+
+    const header = reportHeader(generatedDate);
+    elements.clientReport.innerHTML = `
+      <section class="report-page">
+        ${header}
+        <h1 class="report-title">PET fleet recommendation</h1>
+        <p class="report-subtitle">Automatic five-phase capacity and investment plan based on the client assumptions entered in the sizing tool.</p>
+        <div class="report-summary-grid">
+          <div class="report-kpi"><span>Recommended final fleet</span><strong>${engine.countsLabel(recommended.finalFleet, "No unit")}</strong><small>${recommended.finalUnits} ${plural(recommended.finalUnits, "physical unit")}</small></div>
+          <div class="report-kpi"><span>Planning horizon</span><strong>${horizonYears} ${plural(horizonYears, "year")}</strong><small>${formatNumber(totalCremations)} planned cremations</small></div>
+          <div class="report-kpi"><span>Phase 5 utilisation</span><strong>${formatPercent(finalPhase.allocation.utilization)}</strong><small>Across the installed fleet</small></div>
+          <div class="report-kpi"><span>Phase 5 spare capacity</span><strong>${formatPercent(finalPhase.allocation.spareCapacity)}</strong><small>Under the entered assumptions</small></div>
+        </div>
+        <div class="report-callout"><strong>Investment plan:</strong> ${investmentSchedule(recommended)}. Future phases are considered from the start so every installed machine remains part of the long-term fleet.</div>
+        <div class="report-section">
+          <h2>Installed fleet and occupied capacity</h2>
+          <div class="report-chart-wrap">${chart}</div>
+        </div>
+        <div class="report-section">
+          <h2>Recommended plan by phase</h2>
+          <table class="report-table">
+            <thead><tr><th>Phase</th><th>Individual/year</th><th>Collective/year</th><th>Installed fleet</th><th>Purchase</th><th>Utilisation</th><th>Spare</th><th>Opening-time alternative</th></tr></thead>
+            <tbody>${phaseRows}</tbody>
+          </table>
+        </div>
+        <div class="report-footer">Prepared by Meniar Trabelsi - PET Sizing Tool V5.6</div>
+      </section>
+      <section class="report-page">
+        ${header}
+        <h1 class="report-title">Business plan assumptions and decision notes</h1>
+        <p class="report-subtitle">The recommendation changes automatically when any of these assumptions is modified.</p>
+        <div class="report-section">
+          <h2>Client assumptions</h2>
+          <table class="report-table">
+            <thead><tr><th>Input</th>${metrics.map((_, index) => `<th>Phase ${index + 1}</th>`).join("")}</tr></thead>
+            <tbody>${assumptionRows}</tbody>
+          </table>
+        </div>
+        <div class="report-section report-two-column">
+          <div>
+            <h2>Optional opening-time scenarios</h2>
+            <div class="report-two-column">${openingCards}</div>
+          </div>
+          <div class="report-card">
+            <h3>Other feasible minimum-unit fleets</h3>
+            <ul>${alternatives}</ul>
+          </div>
+        </div>
+        <div class="report-section report-two-column">
+          <div class="report-card">
+            <h3>Recommendation logic</h3>
+            <ul>
+              <li>Cover individual and collective demand in every phase.</li>
+              <li>Use the minimum number of physical units.</li>
+              <li>Keep every installed unit in the long-term fleet.</li>
+              <li>Minimise machine-years before comparing capacity fit and load balance.</li>
+              <li>Use model diversity only as the final tie-breaker.</li>
+            </ul>
+          </div>
+          <div class="report-card">
+            <h3>Scope of this recommendation</h3>
+            <p>This is a technical capacity-planning recommendation based on the entered business plan and validated machine rates. CAPEX, OPEX, energy, filtration and TCO are not ranking criteria in this version.</p>
+          </div>
+        </div>
+        <div class="report-note"><strong>Important:</strong> Results are planning estimates. Final equipment selection must be confirmed against the project configuration, local operating constraints and the latest validated technical data.</div>
+        <div class="report-footer">Prepared by Meniar Trabelsi - PET Sizing Tool V5.6</div>
+      </section>`;
+  }
+
+  function downloadClientPdf() {
     if (!state.plan || !state.plan.feasible) return;
-    const rows = [[
-      "Phase", "Period", "Phase duration", "Annual volume", "Individual share (%)", "Individual/year", "Collective/year",
-      "Hours/day", "Days/year", "Availability (%)", "Average pet weight", "Very large pets share (%)",
-      "Installed FT110", "Installed FT150", "Installed FT125", "Installed FT70", "Installed FT40", "Installed fleet",
-      "Purchase FT110", "Purchase FT150", "Purchase FT125", "Purchase FT70", "Purchase FT40", "Purchase action",
-      "FT110 individual-only units", "FT110 collective-mode units",
-      "FT150 individual-only units", "FT150 collective-mode units",
-      "FT125 individual-only units", "FT125 collective-mode units",
-      "FT70 individual-only units", "FT70 collective-mode units",
-      "FT40 individual-only units", "FT40 collective-mode units",
-      "Occupied units", "Fleet utilisation (%)", "Spare capacity (%)", "Current fleet required h/day",
-      "Previous fleet required h/day", "Opening-time alternatives", "Capacity check", "Fleet combinations screened", "Feasible minimum-unit fleets"
-    ]];
-    state.plan.recommended.phasePlans.forEach((item, index) => {
-      const metrics = item.allocation.metrics;
-      const allocations = item.allocation.allocations;
-      const currentHours = engine.minimumHoursForFleet(item.counts, state.phases[index], 24);
-      const previousCounts = index === 0 ? engine.emptyCounts() : state.plan.recommended.phasePlans[index - 1].counts;
-      const previousHours = index === 0 || engine.totalUnits(previousCounts) === 0
-        ? ""
-        : engine.minimumHoursForFleet(previousCounts, state.phases[index], 24);
-      rows.push([
-        `Phase ${index + 1}`,
-        periodLabel(index),
-        item.duration,
-        metrics.volume,
-        metrics.individualShare,
-        Math.round(metrics.individualDemand),
-        Math.round(metrics.collectiveDemand),
-        metrics.hours,
-        metrics.days,
-        metrics.availability,
-        metrics.weight,
-        metrics.largeShare,
-        ...engine.MACHINE_ORDER.map((code) => item.counts[code] || 0),
-        engine.countsLabel(item.counts, "None"),
-        ...engine.MACHINE_ORDER.map((code) => item.purchases[code] || 0),
-        purchaseLabel(item.purchases, item.startYear, false),
-        ...engine.MACHINE_ORDER.flatMap((code) => [allocations[code].individual, allocations[code].collective]),
-        item.allocation.usedEquivalentUnits,
-        item.allocation.utilization * 100,
-        item.allocation.spareCapacity * 100,
-        currentHours,
-        previousHours,
-        item.openingOptions.map(openingOptionText).join(" | "),
-        item.allocation.feasible ? "OK" : "NOK",
-        state.plan.testedFleetCount,
-        state.plan.candidateCount
-      ]);
-    });
-    const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\r\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "PET_Sizing_Tool_Control_Export.csv";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+    buildClientReport();
+    const previousTitle = document.title;
+    document.title = `PET_Fleet_Recommendation_${new Date().toISOString().slice(0, 10)}`;
+    const restoreTitle = () => { document.title = previousTitle; };
+    window.addEventListener("afterprint", restoreTitle, { once: true });
+    window.print();
   }
 
   elements.resetInputs.addEventListener("click", resetInputs);
-  elements.downloadCsv.addEventListener("click", downloadPlan);
+  elements.downloadPdf.addEventListener("click", downloadClientPdf);
+  window.addEventListener("beforeprint", buildClientReport);
   elements.focusPhase.addEventListener("change", (event) => {
     state.focus = event.currentTarget.value;
     render();
